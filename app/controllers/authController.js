@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
   try {
     if (!username || !password) {
       return res.status(400).json({ message: 'Please provide username and password' });
@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const password_hash = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ username, password_hash, role });
+    const user = await User.create({ username, password_hash, role : 'agent'});
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
